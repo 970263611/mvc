@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @Description mvc
  */
 @Component
-public class BeanUtil implements ApplicationContextAware {
+public class SpringBeanUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 

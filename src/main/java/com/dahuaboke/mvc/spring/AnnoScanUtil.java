@@ -17,7 +17,7 @@ import java.util.Map;
  * @Description mvc
  */
 @Component
-public class URIScanUtil implements ApplicationListener<ContextRefreshedEvent> {
+public class AnnoScanUtil implements ApplicationListener<ContextRefreshedEvent> {
 
     private static Map<String, String> mappingMap = new HashMap();
 
@@ -28,13 +28,17 @@ public class URIScanUtil implements ApplicationListener<ContextRefreshedEvent> {
         for (Map.Entry<String, Object> controller : controllers.entrySet()) {
             Object instance = controller.getValue();
             Class<?> aClass = instance.getClass();
+            MvcRequestMapping mappingClass = aClass.getAnnotation(MvcRequestMapping.class);
+            if(mappingClass != null){
+
+            }
             Method[] declaredMethods = aClass.getDeclaredMethods();
             for (Method method : declaredMethods) {
-                MvcRequestMapping mappingAnno = method.getAnnotation(MvcRequestMapping.class);
-                if (mappingAnno != null) {
-                    String uri = mappingAnno.value();
+                MvcRequestMapping mappingMethod = method.getAnnotation(MvcRequestMapping.class);
+                if (mappingMethod != null) {
+                    String uri = mappingMethod.value();
                     if (mappingMap.containsKey(uri)) {
-                        throw new RuntimeException("already has this uri");
+                        throw new RuntimeException("already has this mapping: " + uri);
                     }
                     if (!uri.startsWith("/")) {
                         uri = "/" + uri;

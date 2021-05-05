@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * @Date 2021/4/29 21:28
  * @Description mvc
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface MvcRequestMapping {

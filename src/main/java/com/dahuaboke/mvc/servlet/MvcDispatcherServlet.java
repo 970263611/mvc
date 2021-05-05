@@ -1,10 +1,14 @@
 package com.dahuaboke.mvc.servlet;
 
-import com.dahuaboke.mvc.handler.HandlerMapping;
-import com.dahuaboke.mvc.spring.BeanUtil;
+import com.dahuaboke.mvc.handler.MvcHandlerMapping;
+import com.dahuaboke.mvc.spring.SpringBeanUtil;
 
-import javax.servlet.*;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -15,8 +19,8 @@ import java.lang.reflect.InvocationTargetException;
  * @Date 2021/4/29 22:19
  * @Description mvc
  */
-@WebServlet("/*")
-public class DispatcherServlet implements Servlet {
+@WebServlet(value = "/")
+public class MvcDispatcherServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
@@ -29,10 +33,10 @@ public class DispatcherServlet implements Servlet {
 
     @Override
     public void service(ServletRequest servletRequest, ServletResponse servletResponse) {
-        HandlerMapping mapping = BeanUtil.getBean(HandlerMapping.class);
+        MvcHandlerMapping mapping = SpringBeanUtil.getBean(MvcHandlerMapping.class);
         if (mapping != null) {
             try {
-                mapping.invoke((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
+                mapping.handle((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (NoSuchMethodException e) {
