@@ -1,7 +1,8 @@
 package com.dahuaboke.mvc.handler;
 
-import com.dahuaboke.mvc.spring.SpringBeanUtil;
+import com.alibaba.fastjson.JSON;
 import com.dahuaboke.mvc.spring.AnnoScanUtil;
+import com.dahuaboke.mvc.spring.SpringBeanUtil;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ public class MvcHandlerMapping {
             if (bean != null) {
                 Object invoke = method.invoke(bean);
                 if (invoke != null) {
-                    response.getWriter().write(invoke.toString());
+                    response.getWriter().write(JSON.toJSONString(invoke));
                 }
             }
         } else {
