@@ -1,5 +1,6 @@
 package com.dahuaboke.mvc.server.tomcat;
 
+import com.dahuaboke.mvc.exception.MvcWebServerException;
 import com.dahuaboke.mvc.server.MvcAbstractWebServer;
 import com.dahuaboke.mvc.servlet.MvcDispatcherServlet;
 import org.apache.catalina.Context;
@@ -40,7 +41,7 @@ public class TomcatServer extends MvcAbstractWebServer {
             tomcat.addServlet("/", "mvcDispatcherServlet", new MvcDispatcherServlet()).addMapping("/");
             tomcat.start();
         } catch (Exception e) {
-            throw new WebServerException("tomcat start error", e);
+            throw new MvcWebServerException("tomcat start error", e);
         }
         new Thread(() -> tomcat.getServer().await()).start();
     }
@@ -50,7 +51,7 @@ public class TomcatServer extends MvcAbstractWebServer {
         try {
             tomcat.stop();
         } catch (LifecycleException e) {
-            throw new WebServerException("tomcat stop error", e);
+            throw new MvcWebServerException("tomcat stop error", e);
         }
     }
 

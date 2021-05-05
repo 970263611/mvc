@@ -1,6 +1,7 @@
 package com.dahuaboke.mvc.handler;
 
 import com.dahuaboke.mvc.config.parse.MvcResultParser;
+import com.dahuaboke.mvc.exception.MvcResultException;
 import com.dahuaboke.mvc.spring.AnnoScanUtil;
 import com.dahuaboke.mvc.spring.SpringBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class MvcHandlerMapping {
     @Autowired
     private MvcResultParser mvcResultParser;
 
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException, MvcResultException {
         String requestURI = request.getRequestURI();
         if (!requestURI.equals("/") && requestURI.endsWith("/")) {
             requestURI = requestURI.substring(0, requestURI.length() - 1);
@@ -37,9 +38,16 @@ public class MvcHandlerMapping {
             Object bean = SpringBeanUtil.getBean(aClass);
             if (bean != null) {
                 Object invoke = method.invoke(bean);
-                if (invoke != null) {
-                    String result = mvcResultParser.parse(invoke);
-                    response.getWriter().write(result);
+                Boolean isRest = Boolean.valueOf(split[2]);
+                if (isRest) {
+                    if (invoke != null) {
+                        String result = mvcResultParser.parse(invoke);
+                        response.getWriter().write(result);
+                    }
+                } else {
+                    if (!(invoke instanceof String)) {
+                        throw new MvcResultException("result type must be string");
+                    }
                 }
             }
         } else {
