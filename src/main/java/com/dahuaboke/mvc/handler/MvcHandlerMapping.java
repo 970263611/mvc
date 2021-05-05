@@ -1,8 +1,9 @@
 package com.dahuaboke.mvc.handler;
 
-import com.alibaba.fastjson.JSON;
+import com.dahuaboke.mvc.config.parse.MvcResultParser;
 import com.dahuaboke.mvc.spring.AnnoScanUtil;
 import com.dahuaboke.mvc.spring.SpringBeanUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,9 @@ import java.lang.reflect.Method;
 @Component
 public class MvcHandlerMapping {
 
+    @Autowired
+    private MvcResultParser mvcResultParser;
+
     public void handle(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, IOException {
         String requestURI = request.getRequestURI();
         if (!requestURI.equals("/") && requestURI.endsWith("/")) {
@@ -34,7 +38,8 @@ public class MvcHandlerMapping {
             if (bean != null) {
                 Object invoke = method.invoke(bean);
                 if (invoke != null) {
-                    response.getWriter().write(JSON.toJSONString(invoke));
+                    String result = mvcResultParser.parse(invoke);
+                    response.getWriter().write(result);
                 }
             }
         } else {

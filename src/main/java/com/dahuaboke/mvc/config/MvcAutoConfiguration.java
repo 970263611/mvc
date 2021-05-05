@@ -1,5 +1,7 @@
 package com.dahuaboke.mvc.config;
 
+import com.dahuaboke.mvc.config.parse.MvcResultParser;
+import com.dahuaboke.mvc.config.parse.fastjson.MvcResultFastjsonParser;
 import com.dahuaboke.mvc.container.MvcContainerInitializer;
 import com.dahuaboke.mvc.container.tomcat.MvcTomcatContainerInitializer;
 import com.dahuaboke.mvc.filter.MvcFilterFactory;
@@ -14,8 +16,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import javax.servlet.ServletException;
 
 /**
  * @Author dahua
@@ -67,5 +67,11 @@ public class MvcAutoConfiguration {
         mvcContainerInitializer.setMvcListenerFactory(mvcListenerFactory);
         mvcContainerInitializer.containerInit(mvcWebServer.getContext());
         return mvcContainerInitializer;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MvcResultParser.class)
+    public MvcResultParser mvcResultParser() {
+        return new MvcResultFastjsonParser();
     }
 }
