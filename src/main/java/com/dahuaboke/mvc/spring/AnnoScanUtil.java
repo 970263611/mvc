@@ -29,14 +29,19 @@ public class AnnoScanUtil implements ApplicationListener<ContextRefreshedEvent> 
             Object instance = controller.getValue();
             Class<?> aClass = instance.getClass();
             MvcRequestMapping mappingClass = aClass.getAnnotation(MvcRequestMapping.class);
-            if(mappingClass != null){
-
+            String uri = null;
+            if (mappingClass != null) {
+                uri = mappingClass.value();
             }
             Method[] declaredMethods = aClass.getDeclaredMethods();
             for (Method method : declaredMethods) {
                 MvcRequestMapping mappingMethod = method.getAnnotation(MvcRequestMapping.class);
                 if (mappingMethod != null) {
-                    String uri = mappingMethod.value();
+                    String uriAfter = mappingMethod.value();
+                    if (!uriAfter.startsWith("/")) {
+                        uriAfter = "/" + uriAfter;
+                    }
+                    uri = uri == null ? uriAfter : uri + uriAfter;
                     if (mappingMap.containsKey(uri)) {
                         throw new RuntimeException("already has this mapping: " + uri);
                     }
