@@ -3,6 +3,7 @@ package com.dahuaboke.mvc.server.tomcat;
 import com.dahuaboke.mvc.exception.MvcWebServerException;
 import com.dahuaboke.mvc.server.MvcAbstractWebServer;
 import com.dahuaboke.mvc.servlet.MvcDispatcherServlet;
+import com.dahuaboke.mvc.util.SpringBeanUtil;
 import org.apache.catalina.Context;
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleException;
@@ -10,17 +11,20 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 import org.springframework.boot.web.server.WebServerException;
 
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+
 /**
  * @Author dahua
  * @Date 2021/5/1 0:47
  * @Description mvc
  */
-public class TomcatServer extends MvcAbstractWebServer {
+public class MvcTomcatServer extends MvcAbstractWebServer {
 
     private Tomcat tomcat;
     private Context context;
 
-    public TomcatServer(int port) {
+    public MvcTomcatServer(int port) {
         super(port);
     }
 
@@ -38,7 +42,11 @@ public class TomcatServer extends MvcAbstractWebServer {
     @Override
     public void start() {
         try {
-            tomcat.addServlet("/", "mvcDispatcherServlet", new MvcDispatcherServlet()).addMapping("/");
+            Servlet servlet = SpringBeanUtil.getBean(Servlet.class);
+            if (!(servlet instanceof MvcDispatcherServlet)) {
+                throw new MvcWebServerException("dahuaboke mvc only support MvcDispatcherServlet, can not support custom servlet", null);
+            }
+            tomcat.addServlet("/", "mvcDispatcherServlet", servlet).addMapping("/");
             tomcat.start();
         } catch (Exception e) {
             throw new MvcWebServerException("tomcat start error", e);
@@ -63,5 +71,10 @@ public class TomcatServer extends MvcAbstractWebServer {
     @Override
     public Context getContext() {
         return context;
+    }
+
+    @Override
+    public ServletContext getServletContext() {
+        return context.getServletContext();
     }
 }

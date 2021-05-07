@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * @Date 2021/4/29 21:29
  * @Description mvc
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface MvcRequestBody {

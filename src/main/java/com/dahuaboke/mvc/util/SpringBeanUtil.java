@@ -1,4 +1,4 @@
-package com.dahuaboke.mvc.spring;
+package com.dahuaboke.mvc.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
