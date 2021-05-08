@@ -116,7 +116,7 @@ public class MvcAutoConfiguration {
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setPrefix(mvcViewProperties.getPrefix());
         templateResolver.setSuffix(mvcViewProperties.getSuffix());
-        templateResolver.setCacheTTLMs(3600000L);
+        templateResolver.setCacheTTLMs(0L);
         return templateResolver;
     }
 

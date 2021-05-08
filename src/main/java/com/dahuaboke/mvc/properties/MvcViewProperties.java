@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "mvc.view")
 public class MvcViewProperties {
 
-    private String prefix = "classpath:/templates/";
+    private String prefix = "/templates/";
 
     private String suffix = ".html";
 

@@ -21,6 +21,7 @@ public class MvcDefaultViewResolver implements MvcViewResolver {
     @Override
     public void resolve(HttpServletRequest request, HttpServletResponse response, String view) throws MvcViewException {
         try {
+//            ClassPathResource resource = new ClassPathResource(prefix + view + suffix);
             ClassPathResource resource = new ClassPathResource(prefix + view + suffix);
             String html = IOUtils.toString(resource.getInputStream(), "UTF-8");
             response.setContentType("text/html;charset=utf-8");
