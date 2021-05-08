@@ -44,7 +44,6 @@ public class MvcTomcatServer extends MvcAbstractWebServer {
          * 需要指定class路径，否则thymeleaf无法加载静态资源
          */
         URL resource = Thread.currentThread().getContextClassLoader().getResource("");
-        System.out.println("path-----------------" + resource.getPath());
         if (resource.getPath().contains(".jar")) {
             /**
              * null设置为默认不加载静态资源，加载器为空加载器
