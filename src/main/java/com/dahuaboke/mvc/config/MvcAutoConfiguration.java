@@ -1,21 +1,23 @@
 package com.dahuaboke.mvc.config;
 
 import com.dahuaboke.mvc.config.parse.MvcDefaultParamParser;
+import com.dahuaboke.mvc.config.parse.MvcJsonParser;
 import com.dahuaboke.mvc.config.parse.MvcParamParser;
 import com.dahuaboke.mvc.config.parse.MvcResultParser;
+import com.dahuaboke.mvc.config.parse.fastjson.MvcFastjsonParser;
 import com.dahuaboke.mvc.config.parse.fastjson.MvcResultFastjsonParser;
 import com.dahuaboke.mvc.container.MvcContainerInitializer;
 import com.dahuaboke.mvc.container.tomcat.MvcTomcatContainerInitializer;
-import com.dahuaboke.mvc.filter.MvcFilterFactory;
-import com.dahuaboke.mvc.listener.MvcListenerFactory;
 import com.dahuaboke.mvc.properties.MvcTomcatProperties;
 import com.dahuaboke.mvc.properties.MvcViewProperties;
 import com.dahuaboke.mvc.server.MvcWebServer;
 import com.dahuaboke.mvc.server.MvcWebServerFactory;
 import com.dahuaboke.mvc.server.tomcat.MvcTomcatServer;
-import com.dahuaboke.mvc.servlet.MvcDispatcherServlet;
 import com.dahuaboke.mvc.view.MvcThymeleafViewResolver;
 import com.dahuaboke.mvc.view.MvcViewResolver;
+import com.dahuaboke.mvc.web.filter.MvcFilterFactory;
+import com.dahuaboke.mvc.web.listener.MvcListenerFactory;
+import com.dahuaboke.mvc.web.servlet.MvcDispatcherServlet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -131,5 +133,11 @@ public class MvcAutoConfiguration {
     @ConditionalOnMissingBean(MvcViewResolver.class)
     public MvcViewResolver mvcViewResolver() {
         return new MvcThymeleafViewResolver();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MvcJsonParser.class)
+    public MvcJsonParser mvcJsonParser() {
+        return new MvcFastjsonParser();
     }
 }

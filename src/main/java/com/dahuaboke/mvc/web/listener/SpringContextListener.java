@@ -1,4 +1,4 @@
-package com.dahuaboke.mvc.listener;
+package com.dahuaboke.mvc.web.listener;
 
 import com.dahuaboke.mvc.config.MvcAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

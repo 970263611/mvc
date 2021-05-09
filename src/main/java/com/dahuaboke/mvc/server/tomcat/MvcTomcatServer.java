@@ -2,7 +2,7 @@ package com.dahuaboke.mvc.server.tomcat;
 
 import com.dahuaboke.mvc.exception.MvcWebServerException;
 import com.dahuaboke.mvc.server.MvcAbstractWebServer;
-import com.dahuaboke.mvc.servlet.MvcDispatcherServlet;
+import com.dahuaboke.mvc.web.servlet.MvcDispatcherServlet;
 import com.dahuaboke.mvc.util.SpringBeanUtil;
 import org.apache.catalina.Context;
 import org.apache.catalina.Host;

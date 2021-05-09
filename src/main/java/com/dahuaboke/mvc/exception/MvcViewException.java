@@ -6,13 +6,12 @@ package com.dahuaboke.mvc.exception;
  * @Description mvc
  */
 public class MvcViewException extends MvcException {
-
-    public MvcViewException() {
-        super();
-    }
-
     public MvcViewException(String message) {
         super(message);
+    }
+
+    public MvcViewException(String message, Throwable cause) {
+        super(message, cause);
     }
 
     public MvcViewException(Throwable cause) {

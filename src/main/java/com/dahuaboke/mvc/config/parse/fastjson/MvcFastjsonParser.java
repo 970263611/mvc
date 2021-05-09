@@ -1,7 +1,7 @@
-package com.dahuaboke.mvc.config.parse;
+package com.dahuaboke.mvc.config.parse.fastjson;
 
 import com.alibaba.fastjson.JSON;
-import org.springframework.stereotype.Component;
+import com.dahuaboke.mvc.config.parse.MvcJsonParser;
 
 import java.util.List;
 
@@ -10,17 +10,19 @@ import java.util.List;
  * @Date 2021/5/7 9:04
  * @Description mvc
  */
-@Component
-public class MvcFastjsonParser {
+public class MvcFastjsonParser implements MvcJsonParser {
 
+    @Override
     public String toJSONString(Object obj) {
         return JSON.toJSONString(obj);
     }
 
+    @Override
     public <T> T toObject(String jsonStr, Class<T> clz) {
         return JSON.parseObject(jsonStr, clz);
     }
 
+    @Override
     public <T> List<T> toArray(String jsonStr, Class<T> clz) {
         return JSON.parseArray(jsonStr, clz);
     }

@@ -1,6 +1,6 @@
 package com.dahuaboke.mvc.config.parse.fastjson;
 
-import com.dahuaboke.mvc.config.parse.MvcFastjsonParser;
+import com.dahuaboke.mvc.config.parse.MvcJsonParser;
 import com.dahuaboke.mvc.config.parse.MvcResultParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MvcResultFastjsonParser implements MvcResultParser {
 
     @Autowired
-    private MvcFastjsonParser mvcFastJsonParser;
+    private MvcJsonParser mvcJsonParser;
 
     @Override
     public String parse(Object obj) {
-        return mvcFastJsonParser.toJSONString(obj);
+        return mvcJsonParser.toJSONString(obj);
     }
 }

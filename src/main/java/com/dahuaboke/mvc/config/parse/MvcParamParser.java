@@ -1,5 +1,7 @@
 package com.dahuaboke.mvc.config.parse;
 
+import com.dahuaboke.mvc.exception.MvcParserException;
+
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 
@@ -10,5 +12,5 @@ import java.lang.reflect.Method;
  */
 public interface MvcParamParser {
 
-    Object[] parse(Method method, HttpServletRequest request);
+    Object[] parse(Method method, HttpServletRequest request) throws MvcParserException;
 }

@@ -1,4 +1,4 @@
-package com.dahuaboke.mvc.filter;
+package com.dahuaboke.mvc.web.filter;
 
 
 import com.dahuaboke.mvc.model.MvcFilter;

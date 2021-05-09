@@ -1,4 +1,4 @@
-package com.dahuaboke.mvc.servlet;
+package com.dahuaboke.mvc.web.servlet;
 
 import com.dahuaboke.mvc.config.parse.MvcParamParser;
 import com.dahuaboke.mvc.config.parse.MvcResultParser;
