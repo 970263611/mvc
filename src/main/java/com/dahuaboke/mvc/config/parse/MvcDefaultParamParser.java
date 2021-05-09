@@ -68,11 +68,11 @@ public class MvcDefaultParamParser implements MvcParamParser {
             Class paramType = parameters[a].getType();
             if (paramType.getName().startsWith("java.")) {
                 if (paramType.equals(List.class) || Arrays.asList(paramType.getInterfaces()).contains(List.class)) {
-                    args[a] = getRequestJson(request, Object.class);
+                    args[a] = getRequestJson(request, true, Object.class);
                     continue;
                 }
                 if (paramType.equals(Map.class) || Arrays.asList(paramType.getInterfaces()).contains(Map.class)) {
-                    args[a] = getRequestJson(request, null);
+                    args[a] = getRequestJson(request, false, null);
                     continue;
                 }
             }
@@ -83,7 +83,7 @@ public class MvcDefaultParamParser implements MvcParamParser {
             MvcRequestParam mvcRequestParam = parameters[a].getAnnotation(MvcRequestParam.class);
             MvcRequestHeader mvcRequestHeader = parameters[a].getAnnotation(MvcRequestHeader.class);
             if (mvcRequestBody != null) {
-                args[a] = changeArg(mvcJsonParser.toJSONString(params), paramType);
+                args[a] = getRequestJson(request, false, paramType);
             } else if (mvcRequestParam != null) {
                 String mvcRequestParamValue = mvcRequestParam.value();
                 String value = params.get(mvcRequestParamValue);
@@ -134,11 +134,13 @@ public class MvcDefaultParamParser implements MvcParamParser {
         return result;
     }
 
-    private Object getRequestJson(HttpServletRequest request, Class clz) throws MvcParserException {
+    private Object getRequestJson(HttpServletRequest request, boolean isList, Class clz) throws MvcParserException {
         try {
             String json = getRequestJsonString(request);
-            if (clz != null) {
+            if (isList && clz != null) {
                 return mvcJsonParser.toArray(json, clz);
+            } else if (!isList && clz != null) {
+                return mvcJsonParser.toObject(json, clz);
             }
             return mvcJsonParser.toObject(json, Map.class);
         } catch (Exception e) {

@@ -16,9 +16,9 @@ import javax.servlet.annotation.WebListener;
 public class SpringContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-//        System.out.println("mvc spring listener start, type: war");
-//        new AnnotationConfigApplicationContext(MvcAutoConfiguration.class);
-//        System.out.println("mvc spring beans load success, type: war");
+        System.out.println("mvc spring listener start, type: war");
+        new AnnotationConfigApplicationContext(MvcAutoConfiguration.class);
+        System.out.println("mvc spring beans load success, type: war");
     }
 
     @Override
