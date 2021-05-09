@@ -67,12 +67,12 @@ public class MvcDefaultParamParser implements MvcParamParser {
         for (int a = 0; a < parameters.length; a++) {
             Class paramType = parameters[a].getType();
             if (paramType.getName().startsWith("java.")) {
-                if (paramType.equals(List.class) || paramType.getSuperclass().equals(List.class)) {
-                    getRequestJson(request, null);
+                if (paramType.equals(List.class) || Arrays.asList(paramType.getInterfaces()).contains(List.class)) {
+                    args[a] = getRequestJson(request, Object.class);
                     continue;
                 }
-                if (paramType.equals(Map.class) || paramType.getSuperclass().equals(Map.class)) {
-                    getRequestJson(request, null);
+                if (paramType.equals(Map.class) || Arrays.asList(paramType.getInterfaces()).contains(Map.class)) {
+                    args[a] = getRequestJson(request, null);
                     continue;
                 }
             }
@@ -90,7 +90,7 @@ public class MvcDefaultParamParser implements MvcParamParser {
                 args[a] = changeArg(value, paramType);
             } else if (mvcRequestHeader != null) {
                 String mvcRequestHeaderValue = mvcRequestHeader.value();
-                args[a] = headers.get(mvcRequestHeaderValue);
+                args[a] = headers.get(mvcRequestHeaderValue.toLowerCase());
             } else {
                 String paramName = parameters[a].getName();
                 String param = params.get(paramName);
@@ -138,22 +138,20 @@ public class MvcDefaultParamParser implements MvcParamParser {
         try {
             String json = getRequestJsonString(request);
             if (clz != null) {
-                return mvcJsonParser.toArray(json, List.class);
+                return mvcJsonParser.toArray(json, clz);
             }
             return mvcJsonParser.toObject(json, Map.class);
-        } catch (IOException e) {
-            throw new MvcParserException("param is null");
+        } catch (Exception e) {
+            throw new MvcParserException("param is null or type mismatching");
         }
     }
 
-    private String getRequestJsonString(HttpServletRequest request)
-            throws IOException {
-        String submitMehtod = request.getMethod();
-        if (submitMehtod.equals("GET")) {
-            return new String(request.getQueryString().getBytes("iso-8859-1"), "utf-8").replaceAll("%22", "\"");
-        } else {
+    private String getRequestJsonString(HttpServletRequest request) throws IOException, MvcParserException {
+        String method = request.getMethod();
+        if (method.equals("POST")) {
             return getRequestPostStr(request);
         }
+        throw new MvcParserException("only post requests support parameter conversion of Map and List types");
     }
 
     private String getRequestPostStr(HttpServletRequest request)
@@ -186,16 +184,16 @@ public class MvcDefaultParamParser implements MvcParamParser {
     }
 
     public static void main(String[] args) {
-//        List<Integer> list = new ArrayList(){{
-//            add(1);
-//            add(3);
-//            add(3);
-//        }};
-        Map map = new HashMap() {{
-            put("1", 1);
-            put("2", 2);
-            put("3", 3);
+        List<Integer> list = new ArrayList() {{
+            add(1);
+            add(3);
+            add(3);
         }};
-        System.out.println(JSON.toJSONString(map));
+//        Map map = new HashMap() {{
+//            put("1", 1);
+//            put("2", 2);
+//            put("3", 3);
+//        }};
+        System.out.println(JSON.toJSONString(list));
     }
 }
