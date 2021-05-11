@@ -94,7 +94,11 @@ public class MvcDefaultParamParser implements MvcParamParser {
             } else {
                 String paramName = parameters[a].getName();
                 String param = params.get(paramName);
-                args[a] = changeArg(param, paramType);
+                if (param != null) {
+                    args[a] = changeArg(param, paramType);
+                } else {
+                    args[a] = changeArg(mvcJsonParser.toJSONString(params), paramType);
+                }
             }
         }
         return args;
