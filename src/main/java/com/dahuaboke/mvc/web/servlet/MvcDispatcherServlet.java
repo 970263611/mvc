@@ -14,6 +14,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -79,7 +82,11 @@ public class MvcDispatcherServlet extends HttpServlet {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                try {
+                    servletResponse.getWriter().write(getStackTrace(e));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
@@ -94,4 +101,14 @@ public class MvcDispatcherServlet extends HttpServlet {
 
     }
 
+    private String getStackTrace(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        try {
+            throwable.printStackTrace(pw);
+            return sw.toString();
+        } finally {
+            pw.close();
+        }
+    }
 }
