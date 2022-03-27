@@ -13,7 +13,7 @@ import com.dahuaboke.mvc.properties.MvcViewProperties;
 import com.dahuaboke.mvc.server.MvcWebServer;
 import com.dahuaboke.mvc.server.MvcWebServerFactory;
 import com.dahuaboke.mvc.server.tomcat.MvcTomcatServer;
-import com.dahuaboke.mvc.view.MvcThymeleafViewResolver;
+import com.dahuaboke.mvc.view.MvcDefaultViewResolver;
 import com.dahuaboke.mvc.view.MvcViewResolver;
 import com.dahuaboke.mvc.web.filter.MvcFilterFactory;
 import com.dahuaboke.mvc.web.listener.MvcListenerFactory;
@@ -25,9 +25,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
@@ -113,26 +110,17 @@ public class MvcAutoConfiguration {
     }
 
     @Bean
-    public ServletContextTemplateResolver servletContextTemplateResolver(ServletContext servletContext) {
-        ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setPrefix(mvcViewProperties.getPrefix());
-        templateResolver.setSuffix(mvcViewProperties.getSuffix());
-        templateResolver.setCacheTTLMs(0L);
-        return templateResolver;
-    }
-
-    @Bean
-    public TemplateEngine templateEngine(ServletContextTemplateResolver templateResolver) {
-        TemplateEngine templateEngine = new TemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-        return templateEngine;
-    }
-
-    @Bean
     @ConditionalOnMissingBean(MvcViewResolver.class)
     public MvcViewResolver mvcViewResolver() {
-        return new MvcThymeleafViewResolver();
+        MvcDefaultViewResolver mvcDefaultViewResolver = new MvcDefaultViewResolver();
+        mvcDefaultViewResolver.setPrefix(mvcViewProperties.getPrefix());
+        mvcDefaultViewResolver.setSuffix(mvcViewProperties.getSuffix());
+        mvcDefaultViewResolver.setExcludes(mvcViewProperties.getExcludes());
+        String debugPath = mvcViewProperties.getDebugPath();
+        if (debugPath != null) {
+            mvcDefaultViewResolver.setDebugPath(debugPath);
+        }
+        return mvcDefaultViewResolver;
     }
 
     @Bean

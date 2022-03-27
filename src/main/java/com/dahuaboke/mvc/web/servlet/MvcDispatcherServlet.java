@@ -53,33 +53,29 @@ public class MvcDispatcherServlet extends HttpServlet {
                 HttpServletRequest request = (HttpServletRequest) servletRequest;
                 HttpServletResponse response = (HttpServletResponse) servletResponse;
                 String requestURI = request.getRequestURI();
-                if (requestURI.equals("/favicon.ico")) {
-                    return;
-                }
                 Map handle = mapping.handle(requestURI);
-                Object bean = handle.get("bean");
-                if (bean != null) {
-                    Method method = (Method) handle.get("method");
-                    Object[] args = mvcParamParser.parse(method, request);
-                    Object invoke = method.invoke(bean, args);
-                    if ((Boolean) handle.get("isRest")) {
-                        if (invoke != null) {
-                            String result = mvcResultParser.parse(invoke);
-                            response.getWriter().write(result);
+                if (handle != null && handle.containsKey("bean")) {
+                    Object bean = handle.get("bean");
+                    if (bean != null) {
+                        Method method = (Method) handle.get("method");
+                        Object[] args = mvcParamParser.parse(method, request);
+                        Object invoke = method.invoke(bean, args);
+                        if ((Boolean) handle.get("isRest")) {
+                            if (invoke != null) {
+                                String result = mvcResultParser.parse(invoke);
+                                response.setContentType("application/json");
+                                response.getWriter().write(result);
+                            }
+                        } else {
+                            if (!(invoke instanceof String)) {
+                                throw new MvcResultException("type of ResponseBody result type must be string");
+                            }
+                            String view = format((String) invoke);
+                            mvcViewResolver.resolve(request, response, view);
                         }
-                    } else {
-                        if (!(invoke instanceof String)) {
-                            throw new MvcResultException("type of ResponseBody result type must be string");
-                        }
-                        String view = (String) invoke;
-                        if (view.startsWith("/")) {
-                            view = view.replaceFirst("/", "");
-                        }
-                        if (view.endsWith("/")) {
-                            view = view.substring(0, view.length() - 1);
-                        }
-                        mvcViewResolver.resolve(request, response, view);
                     }
+                } else {
+                    mvcViewResolver.resolve(request, response, requestURI);
                 }
             } catch (Exception e) {
                 try {
@@ -91,6 +87,7 @@ public class MvcDispatcherServlet extends HttpServlet {
         }
     }
 
+
     @Override
     public String getServletInfo() {
         return null;
@@ -99,6 +96,13 @@ public class MvcDispatcherServlet extends HttpServlet {
     @Override
     public void destroy() {
 
+    }
+
+    private String format(String uri) {
+        if (uri.startsWith("/")) {
+            uri = uri.replaceFirst("/", "");
+        }
+        return uri;
     }
 
     private String getStackTrace(Throwable throwable) {

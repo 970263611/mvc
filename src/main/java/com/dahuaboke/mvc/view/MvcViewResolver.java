@@ -12,5 +12,5 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface MvcViewResolver {
 
-    void resolve(HttpServletRequest request, HttpServletResponse response, String view) throws MvcViewException;
+    void resolve(HttpServletRequest request, HttpServletResponse response, String uri) throws MvcViewException;
 }
