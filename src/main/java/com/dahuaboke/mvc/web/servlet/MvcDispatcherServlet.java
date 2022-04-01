@@ -8,13 +8,13 @@ import com.dahuaboke.mvc.view.MvcViewResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
@@ -47,7 +47,7 @@ public class MvcDispatcherServlet extends HttpServlet {
     }
 
     @Override
-    public void service(ServletRequest servletRequest, ServletResponse servletResponse) {
+    public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException {
         if (mapping != null) {
             try {
                 HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -64,6 +64,7 @@ public class MvcDispatcherServlet extends HttpServlet {
                             if (invoke != null) {
                                 String result = mvcResultParser.parse(invoke);
                                 response.setContentType("application/json");
+                                response.setCharacterEncoding("UTF-8");
                                 response.getWriter().write(result);
                             }
                         } else {
@@ -78,11 +79,7 @@ public class MvcDispatcherServlet extends HttpServlet {
                     mvcViewResolver.resolve(request, response, requestURI);
                 }
             } catch (Exception e) {
-                try {
-                    servletResponse.getWriter().write(getStackTrace(e));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                throw new ServletException(e);
             }
         }
     }

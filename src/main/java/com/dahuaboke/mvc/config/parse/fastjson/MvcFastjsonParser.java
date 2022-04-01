@@ -1,6 +1,7 @@
 package com.dahuaboke.mvc.config.parse.fastjson;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.dahuaboke.mvc.config.parse.MvcJsonParser;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public class MvcFastjsonParser implements MvcJsonParser {
 
     @Override
     public String toJSONString(Object obj) {
-        return JSON.toJSONString(obj);
+        return JSON.toJSONString(obj, SerializerFeature.DisableCircularReferenceDetect);
     }
 
     @Override

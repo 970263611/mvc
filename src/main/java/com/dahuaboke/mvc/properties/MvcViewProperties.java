@@ -14,7 +14,7 @@ public class MvcViewProperties {
 
     private String suffix = ".html";
 
-    private String[] excludes = {".js",".css",".png", ".jpg", ".jpeg", ".ttf", ".ico"};
+    private String[] excludes = {".js", ".css", ".png", ".jpg", ".jpeg", ".gif", ".ttf", ".ico", ".map"};
 
     private String debugPath;
 

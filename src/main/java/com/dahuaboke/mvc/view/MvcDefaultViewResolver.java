@@ -51,7 +51,9 @@ public class MvcDefaultViewResolver implements MvcViewResolver {
             throw new MvcViewException(e);
         } finally {
             try {
-                fis.close();
+                if (fis != null) {
+                    fis.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

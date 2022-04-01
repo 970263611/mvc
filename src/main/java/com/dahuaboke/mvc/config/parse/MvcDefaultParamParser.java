@@ -107,6 +107,33 @@ public class MvcDefaultParamParser implements MvcParamParser {
     private <T> T changeArg(String v, Class<T> clz) throws MvcParserException {
         if (v != null) {
             try {
+                if (clz.equals(String.class)) {
+                    return (T) v;
+                }
+                if (clz.equals(int.class) || clz.equals(Integer.class)) {
+                    return (T) ((Integer) Integer.parseInt(v));
+                }
+                if (clz.equals(short.class) || clz.equals(Short.class)) {
+                    return (T) ((Short) Short.parseShort(v));
+                }
+                if (clz.equals(long.class) || clz.equals(Long.class)) {
+                    return (T) ((Long) Long.parseLong(v));
+                }
+                if (clz.equals(float.class) || clz.equals(Float.class)) {
+                    return (T) ((Float) Float.parseFloat(v));
+                }
+                if (clz.equals(double.class) || clz.equals(Double.class)) {
+                    return (T) ((Double) Double.parseDouble(v));
+                }
+                if (clz.equals(char.class) || clz.equals(Character.class)) {
+                    return (T) (v.toCharArray());
+                }
+                if (clz.equals(boolean.class) || clz.equals(Boolean.class)) {
+                    return (T) ((Boolean) Boolean.parseBoolean(v));
+                }
+                if (clz.equals(byte.class) || clz.equals(Byte.class)) {
+                    return (T) ((Byte) Byte.parseByte(v));
+                }
                 return mvcJsonParser.toObject(v, clz);
             } catch (Exception e) {
                 throw new MvcParserException("param type mismatching");
