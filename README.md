@@ -172,8 +172,9 @@ public MvcViewResolver mvcViewResolver() {
 ### 8.参数配置
 
 - mvc.tomcat.port=8080（服务启动端口，参数值必须为数字，且理论应在0-65535之间）
-- mvc.view.prefix=/templates/（静态资源路径前缀）
+- mvc.view.prefix=web/（静态资源路径前缀）
 - mvc.view.suffix=.html（静态资源路径后缀）
+- mvc.view.debugPath=C:/Users （因为静态资源编译后无法动态刷新，这个参数指定到项目静态资源路径可以动态刷新）
 
 ### 9.使用示例
 
@@ -208,14 +209,6 @@ public class TestController {
     @MvcResponseBody
     public String c(@MvcRequestParam("param") String param) {
         return param;
-    }
-    /**
-     * 此方法要求请求参数含有对应字段且为数字
-     */
-    @MvcRequestMapping("/d")
-    @MvcResponseBody
-    public List d(int num) {
-        return num;
     }
     /**
      * List类型参数默认带有MvcRequestBody注解
