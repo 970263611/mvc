@@ -5,10 +5,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * @Author dahua
@@ -25,7 +22,7 @@ public class MvcDefaultViewResolver implements MvcViewResolver {
     @Override
     public void resolve(HttpServletRequest request, HttpServletResponse response, String uri) throws MvcViewException {
         boolean isExclude = checkExclude(uri);
-        FileInputStream fis = null;
+        InputStream is = null;
         ClassPathResource resource;
         File file;
         String filePath = prefix + uri;
@@ -37,22 +34,33 @@ public class MvcDefaultViewResolver implements MvcViewResolver {
             if (debugPath != null) {
                 filePath = debugPath + filePath;
                 file = new File(filePath);
+                is = new FileInputStream(file);
             } else {
-                resource = new ClassPathResource(filePath);
-                file = resource.getFile();
+                ClassLoader classLoader = MvcDefaultViewResolver.class.getClassLoader();
+                String path = classLoader.getResource("").getPath();
+                if (path.contains(".jar!")) {
+                    path.replaceFirst("file:/", "");
+                    filePath = filePath.replaceAll("\\/\\/", "/");
+                    is = classLoader.getResourceAsStream(filePath);
+                } else {
+                    resource = new ClassPathResource(filePath);
+                    file = resource.getFile();
+                    is = new FileInputStream(file);
+                }
             }
             OutputStream out = response.getOutputStream();
-            fis = new FileInputStream(file);
-            byte[] bytes = new byte[fis.available()];
-            fis.read(bytes);
+            int available = is.available();
+            byte[] bytes = new byte[available];
+            BufferedInputStream bis = new BufferedInputStream(is);
+            bis.read(bytes, 0, available);
             out.write(bytes);
             out.flush();
         } catch (IOException e) {
             throw new MvcViewException(e);
         } finally {
             try {
-                if (fis != null) {
-                    fis.close();
+                if (is != null) {
+                    is.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
